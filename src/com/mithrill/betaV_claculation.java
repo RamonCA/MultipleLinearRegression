@@ -76,8 +76,7 @@ public class betaV_claculation {
     }
 
     private double[][] inverse_XTX(){
-        RealMatrix inv_XTX = MatrixUtils.inverse(MatrixUtils.createRealMatrix(this.matrix_XTmultX()));
-        return inv_XTX.getData();
+        return MatrixUtils.inverse(MatrixUtils.createRealMatrix(this.matrix_XTmultX())).getData();
     }
 }
 
