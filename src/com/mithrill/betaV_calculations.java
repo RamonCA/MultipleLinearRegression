@@ -1,19 +1,15 @@
 package com.mithrill;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
-
 import org.apache.commons.math3.linear.MatrixUtils;
 
-
-public class betaV_claculation {
+public class betaV_calculations {
 
     private final double [] factor1;
     private final double [] factor2;
     private final double [] yield;
 
-    public betaV_claculation(double[] factor1, double[] factor2, double[] yield) {
+    public betaV_calculations(double[] factor1, double[] factor2, double[] yield) {
         this.factor1 = factor1;
         this.factor2 = factor2;
         this.yield = yield;
@@ -50,7 +46,7 @@ public class betaV_claculation {
         return mat_XT;
     }
 
-    private double [][] matrix_XTmultX(double [][] mat_A, double[][] mat_B){
+    private double [][] mat_Multiplication(double [][] mat_A, double[][] mat_B){
         double [][] mat_XTmultX = new double[mat_B.length][mat_A[0].length];
 
         for (int i = 0; i < mat_B.length; i++) {
@@ -66,7 +62,7 @@ public class betaV_claculation {
     }
 
     private double[][] inverse_XTX(){
-        return MatrixUtils.inverse(MatrixUtils.createRealMatrix(this.matrix_XTmultX(matrix_X(),matrix_XT()))).getData();
+        return MatrixUtils.inverse(MatrixUtils.createRealMatrix(this.mat_Multiplication(matrix_X(),matrix_XT()))).getData();
     }
 
     private double [][] XT_mult_Y(){
@@ -75,11 +71,11 @@ public class betaV_claculation {
         for (double val: yield) {
             y[j++][0] = val;
         }
-        return matrix_XTmultX(y, matrix_XT());
+        return mat_Multiplication(y, matrix_XT());
     }
 
     private double [][] beta(){
-        return matrix_XTmultX(XT_mult_Y(), inverse_XTX());
+        return mat_Multiplication(XT_mult_Y(), inverse_XTX());
     }
 }
 
