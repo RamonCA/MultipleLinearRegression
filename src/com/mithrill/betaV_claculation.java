@@ -1,10 +1,11 @@
 package com.mithrill;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.EigenDecomposition;
+import java.util.Objects;
+
 import org.apache.commons.math3.linear.MatrixUtils;
-import org.apache.commons.math3.linear.RealMatrix;
+
 
 public class betaV_claculation {
 
@@ -19,10 +20,7 @@ public class betaV_claculation {
     }
 
     public void func (){
-        System.out.println(Arrays.deepToString(this.matrix_X()));
-        System.out.println(Arrays.deepToString(this.matrix_XT()));
-        System.out.println(Arrays.deepToString(this.matrix_XTmultX()));
-        System.out.println(Arrays.deepToString(this.inverse_XTX()));
+        System.out.println(Arrays.deepToString(beta()));
     }
 
     private double[][] matrix_X(){
@@ -52,31 +50,36 @@ public class betaV_claculation {
         return mat_XT;
     }
 
-    private double [][] matrix_XTmultX(){
-        double [][] matrix_X = this.matrix_X();
-        double [][] matrix_XT = this.matrix_XT();
-        double [][] mat_XTmultX = new double[matrix_XT.length][matrix_X[0].length];
+    private double [][] matrix_XTmultX(double [][] mat_A, double[][] mat_B){
+        double [][] mat_XTmultX = new double[mat_B.length][mat_A[0].length];
 
-        for (int i = 0; i < matrix_XT.length; i++) {
-            for (int j = 0; j < matrix_X[0].length; j++) {
+        for (int i = 0; i < mat_B.length; i++) {
+            for (int j = 0; j < mat_A[0].length; j++) {
                 double x = 0;
-                for (int k = 0; k < matrix_XT[0].length; k++) {
-                    x += matrix_XT[i][k] * matrix_X[k][j];
+                for (int k = 0; k < mat_B[0].length; k++) {
+                    x += mat_B[i][k] * mat_A[k][j];
                 }
                 mat_XTmultX[i][j] = x;
-
-                if (j == matrix_X[0].length - 1){
-                    System.out.print(x + "\n");
-                }else{
-                    System.out.print(x + "\t");
-                }
             }
         }
         return mat_XTmultX;
     }
 
     private double[][] inverse_XTX(){
-        return MatrixUtils.inverse(MatrixUtils.createRealMatrix(this.matrix_XTmultX())).getData();
+        return MatrixUtils.inverse(MatrixUtils.createRealMatrix(this.matrix_XTmultX(matrix_X(),matrix_XT()))).getData();
+    }
+
+    private double [][] XT_mult_Y(){
+        double [][] y = new double[this.yield.length][1];
+        int j = 0;
+        for (double val: yield) {
+            y[j++][0] = val;
+        }
+        return matrix_XTmultX(y, matrix_XT());
+    }
+
+    private double [][] beta(){
+        return matrix_XTmultX(XT_mult_Y(), inverse_XTX());
     }
 }
 
