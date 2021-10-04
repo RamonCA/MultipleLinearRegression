@@ -8,7 +8,6 @@ public class Main {
 		double [] yield = {251.30,251.30,248.30,267.50,273.00,276.50,270.30,274.90,285.00,290.00,297.00,302.50,304.50,309.50,321.70,330.70,349.00};
 
 		betaV_calculations test = new betaV_calculations(factor_1, factor_2, yield);
-
 		test.func();
     }
 }
