@@ -1,7 +1,6 @@
 package com.mithrill;
 
 import java.util.Arrays;
-import org.apache.commons.math3.linear.MatrixUtils;
 
 public class betaV_calculations {
 
@@ -16,8 +15,9 @@ public class betaV_calculations {
     }
 
     public void func (){
-        //System.out.println(Arrays.deepToString(beta()));
+
         System.out.println(Arrays.deepToString(inverse_XTX()));
+        System.out.println(Arrays.deepToString(beta()));
     }
 
     private double[][] matrix_X(){
@@ -62,7 +62,7 @@ public class betaV_calculations {
         return mat_XTmultX;
     }
 
-    private double[][] inverse_XTX(){
+    /*private double[][] inverse_XTX(){
 
         double [][]mat_XTX = this.mat_Multiplication(matrix_X(),matrix_XT());
         double [][] mat_Ident = new double[mat_XTX.length][mat_XTX[0].length];
@@ -103,6 +103,45 @@ public class betaV_calculations {
             f1[i] = factor * f1[i];
         }
         return f1;
+    }*/
+
+    private double[][] mat_ident_creation(int mat_size){
+
+        double[][] mat_ident = new double[mat_size][mat_size];
+        for (int i = 0; i < mat_size; i++) {
+            for (int j = 0; j < mat_size; j++) {
+                if (i == j) mat_ident[i][j] = 1;
+                else mat_ident[i][j]=0;
+            }
+        }
+        return mat_ident;
+    }
+
+    private double [][] inverse_XTX(){
+
+        double [][] matrix_XT = this.mat_Multiplication(matrix_X(),matrix_XT());
+        double[][] ans = mat_ident_creation(matrix_XT.length);
+        double xF1;
+        double aux;
+        for (int i = 0; i <matrix_XT.length ; i++) {
+            xF1 = matrix_XT[i][i];
+
+            for (int j = 0; j < matrix_XT.length; j++) {
+                matrix_XT[i][j] = matrix_XT[i][j] / xF1;
+                ans[i][j] = ans[i][j] / xF1;
+            }
+
+            for (int j = 0; j < matrix_XT.length ; j++) {
+                if (i != j){
+                    aux = matrix_XT[j][i];
+                    for (int k = 0; k < matrix_XT.length; k++) {
+                        matrix_XT[j][k] = matrix_XT[j][k] -aux*matrix_XT[i][k];
+                        ans[j][k] = ans[j][k] -aux*ans[i][k];
+                    }
+                }
+            }
+        }
+        return ans;
     }
 
     private double [][] XT_mult_Y(){
